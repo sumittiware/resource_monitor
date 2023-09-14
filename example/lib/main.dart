@@ -80,21 +80,29 @@ class _MyAppState extends State<MyApp> {
                             ])
                           ]),
                           TableRow(children: [
+                            Column(children: const [Text('RAM - OS')]),
+                            Column(children: [
+                              Text(formatBytes(_data!.memoryByOs.toInt(), 2))
+                            ])
+                          ]),
+                          TableRow(children: [
+                            Column(children: const [Text('RAM - Free')]),
+                            Column(children: [
+                              Text(formatBytes(_data!.memoryFree.toInt(), 2))
+                            ])
+                          ]),
+                          TableRow(children: [
+                            Column(children: const [Text('RAM - Total')]),
+                            Column(children: [
+                              Text(formatBytes(_data!.totalMemory.toInt(), 2))
+                            ]),
+                          ]),
+                          TableRow(children: [
                             Column(children: const [Text('CPU - Live')]),
                             Column(children: [
                               Text('${_data?.cpuInUseByApp.floorToDouble()} %')
                             ])
                           ]),
-                          TableRow(children: [
-                            Column(children: const [Text('RAM - Peak')]),
-                            Column(children: [
-                              Text(formatBytes(_appMemoryUsagePeak.toInt(), 2))
-                            ])
-                          ]),
-                          TableRow(children: [
-                            Column(children: const [Text('CPU - Peak')]),
-                            Column(children: [Text('$_appCpuUsagePeak')]),
-                          ])
                         ])
                   : const CircularProgressIndicator()),
           floatingActionButton: FloatingActionButton(

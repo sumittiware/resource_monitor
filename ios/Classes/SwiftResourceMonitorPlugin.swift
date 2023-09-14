@@ -13,12 +13,14 @@ public class SwiftResourceMonitorPlugin: NSObject, FlutterPlugin {
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         if(call.method == "getResourceUsage")
         {
+            var mem = memoryInUseByOs()
             var dict = [String: Any]()
-            //  dict["cpuInUsebyOs"] = //TODO(sikander)
-            //  dict["memoryInUseByOs"] = //TODO(sikander)
-            //  dict["totalMemory"] = //TODO(sikander)
-            dict["cpuInUseByApp"] = cpuInUseByApp()
             dict["memoryInUseByApp"] = memoryInUseByApp()
+            dict["memeoryInUseByOs"] = mem.used
+            dict["memoryFree"] = deviceRemainingFreeSpace()
+            dict["totalMemory"] = mem.total
+            dict["cpuInUseByApp"] = cpuInUseByApp()
+            
             result(dict)
         }
         else
@@ -101,4 +103,20 @@ public class SwiftResourceMonitorPlugin: NSObject, FlutterPlugin {
         let total = ProcessInfo.processInfo.physicalMemory
         return (used, total)
     }
+
+    // Memory Free in the Syste,
+    public func deviceRemainingFreeSpace() -> Int64? {
+        let documentDirectory = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).last!
+            guard
+                let systemAttributes = try? FileManager.default.attributesOfFileSystem(forPath: documentDirectory),
+                let freeSize = systemAttributes[.systemFreeSize] as? NSNumber
+            else {
+                return nil
+            }
+        return freeSize.int64Value 
+    }
+
+    public func totalMemory() -> UInt64 {
+        return ProcessInfo().physicalMemory 
+    }    
 }

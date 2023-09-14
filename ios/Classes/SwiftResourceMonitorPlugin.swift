@@ -30,7 +30,7 @@ public class SwiftResourceMonitorPlugin: NSObject, FlutterPlugin {
         }
     }
     
-    // CPU ine use by app (verified)
+
     public func cpuInUseByApp() -> Double {
         var totalUsageOfCPU: Double = 0.0
         var threadsList: thread_act_array_t?
@@ -66,7 +66,7 @@ public class SwiftResourceMonitorPlugin: NSObject, FlutterPlugin {
         return totalUsageOfCPU
     }
     
-    // Memory in use by App (verified)
+
     func memoryInUseByApp() -> Double {
         var taskInfo = mach_task_basic_info()
         var count = mach_msg_type_number_t(MemoryLayout<mach_task_basic_info>.size)/4
@@ -85,7 +85,7 @@ public class SwiftResourceMonitorPlugin: NSObject, FlutterPlugin {
         }
         return 0.0
     }
-    // Memory in use by OS TODO(Sikander) verify
+
     public func memoryInUseByOs() -> MemoryUsage {
         var taskInfo = task_vm_info_data_t()
         var count = mach_msg_type_number_t(MemoryLayout<task_vm_info>.size) / 4
@@ -104,7 +104,7 @@ public class SwiftResourceMonitorPlugin: NSObject, FlutterPlugin {
         return (used, total)
     }
 
-    // Memory Free in the Syste,
+    // Free space in file system
     public func deviceRemainingFreeSpace() -> Int64? {
         let documentDirectory = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).last!
             guard
@@ -115,8 +115,4 @@ public class SwiftResourceMonitorPlugin: NSObject, FlutterPlugin {
             }
         return freeSize.int64Value 
     }
-
-    public func totalMemory() -> UInt64 {
-        return ProcessInfo().physicalMemory 
-    }    
 }

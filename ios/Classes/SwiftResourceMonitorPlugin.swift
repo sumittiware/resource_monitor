@@ -13,12 +13,14 @@ public class SwiftResourceMonitorPlugin: NSObject, FlutterPlugin {
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         if(call.method == "getResourceUsage")
         {
+            var mem = memoryInUseByOs()
             var dict = [String: Any]()
-            //  dict["cpuInUsebyOs"] = //TODO(sikander)
-            //  dict["memoryInUseByOs"] = //TODO(sikander)
-            //  dict["totalMemory"] = //TODO(sikander)
-            dict["cpuInUseByApp"] = cpuInUseByApp()
             dict["memoryInUseByApp"] = memoryInUseByApp()
+            dict["memeoryInUseByOs"] = mem.used
+            dict["memoryFree"] = deviceRemainingFreeSpace()
+            dict["totalMemory"] = mem.total
+            dict["cpuInUseByApp"] = cpuInUseByApp()
+            
             result(dict)
         }
         else
@@ -28,7 +30,7 @@ public class SwiftResourceMonitorPlugin: NSObject, FlutterPlugin {
         }
     }
     
-    // CPU ine use by app (verified)
+
     public func cpuInUseByApp() -> Double {
         var totalUsageOfCPU: Double = 0.0
         var threadsList: thread_act_array_t?
@@ -64,7 +66,7 @@ public class SwiftResourceMonitorPlugin: NSObject, FlutterPlugin {
         return totalUsageOfCPU
     }
     
-    // Memory in use by App (verified)
+
     func memoryInUseByApp() -> Double {
         var taskInfo = mach_task_basic_info()
         var count = mach_msg_type_number_t(MemoryLayout<mach_task_basic_info>.size)/4
@@ -83,7 +85,7 @@ public class SwiftResourceMonitorPlugin: NSObject, FlutterPlugin {
         }
         return 0.0
     }
-    // Memory in use by OS TODO(Sikander) verify
+
     public func memoryInUseByOs() -> MemoryUsage {
         var taskInfo = task_vm_info_data_t()
         var count = mach_msg_type_number_t(MemoryLayout<task_vm_info>.size) / 4
@@ -100,5 +102,17 @@ public class SwiftResourceMonitorPlugin: NSObject, FlutterPlugin {
         
         let total = ProcessInfo.processInfo.physicalMemory
         return (used, total)
+    }
+
+    // Free space in file system
+    public func deviceRemainingFreeSpace() -> Int64? {
+        let documentDirectory = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).last!
+            guard
+                let systemAttributes = try? FileManager.default.attributesOfFileSystem(forPath: documentDirectory),
+                let freeSize = systemAttributes[.systemFreeSize] as? NSNumber
+            else {
+                return nil
+            }
+        return freeSize.int64Value 
     }
 }

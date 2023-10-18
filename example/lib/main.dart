@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -24,8 +25,13 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    timer =
-        Timer.periodic(const Duration(seconds: 1), (Timer t) => _getResource());
+    timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
+      if (Platform.isIOS) {
+        _getResource();
+      } else {
+        print("No supported for this platform");
+      }
+    });
   }
 
   @override

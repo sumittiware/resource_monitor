@@ -19,8 +19,5 @@ dev_dependencies:
 flutter:
   plugin:
     platforms:
-      android:
-        package: com.randomforest.resource_monitor
-        pluginClass: ResourceMonitorPlugin
       ios:
         pluginClass: ResourceMonitorPlugin
